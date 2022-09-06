@@ -3,3 +3,12 @@ venv
 __pycache__/
 *.sqlite3
 hoba
+.env
+__init__
+
+*.log
+*.pot
+*.pyc
+__pycache__
+db.sqlite3
+media
