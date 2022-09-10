@@ -4,6 +4,7 @@ from rest_framework.exceptions import ValidationError
 
 from .models import Director, Review, Movie
 from rest_framework import serializers
+from drf_writable_nested import WritableNestedModelSerializer
 
 
 class DirectorSerializer(serializers.ModelSerializer):
@@ -31,7 +32,7 @@ class ReviewSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class MovieSerializer(serializers.ModelSerializer):
+class MovieSerializer(WritableNestedModelSerializer, serializers.ModelSerializer):
     review = ReviewSerializer(many=True)
     rating = serializers.SerializerMethodField()
     director = DirectorSerializer()
@@ -54,7 +55,6 @@ class MovieValidateFields(serializers.Serializer):
         if Director.objects.filter(id=director_id).count() == 0:
             raise ValidationError("This director does not exists")
         return director_id
-
 
     def validate_title(self, title):
         if Movie.objects.filter(title=title).count() > 0:

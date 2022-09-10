@@ -16,20 +16,22 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from movie_app.views import directors_view, directors_detail_view, movies_view, \
-    movies_detail_view, reviews_view, reviews_detail_view, movies_reviews_view
+    movies_detail_view, reviews_view, reviews_detail_view, movies_reviews_view, DirectorListAPIView, \
+    DirectorDetailUpdateDeleteAPIView, MovieListAPIView, MovieDetailUpdateDeleteAPIView, ReviewsListAPIView, \
+    ReviewDetailUpdateDeleteAPIView
 from users import views as users_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/v1/directors/', directors_view),
-    path('api/v1/directors/<int:id>/', directors_detail_view),
-    path('api/v1/movies/', movies_view),
+    path('api/v1/directors/', DirectorListAPIView.as_view()),
+    path('api/v1/directors/<int:id>/', DirectorDetailUpdateDeleteAPIView.as_view()),
+    path('api/v1/movies/', MovieListAPIView.as_view()),
     path('api/v1/movies/reviews/', movies_reviews_view),
-    path('api/v1/movies/<int:id>/', movies_detail_view),
-    path('api/v1/reviews/', reviews_view),
-    path('api/v1/reviews/<int:id>/', reviews_detail_view),
-    path('api/v1/register/', users_views.register),
+    path('api/v1/movies/<int:id>/', MovieDetailUpdateDeleteAPIView.as_view()),
+    path('api/v1/reviews/', ReviewsListAPIView.as_view()),
+    path('api/v1/reviews/<int:id>/', ReviewDetailUpdateDeleteAPIView.as_view()),
+    path('api/v1/register/', users_views.RegisterAPIView.as_view()),
     path('activate/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/',
          users_views.activate, name='activate'),
-    path('api/v1/authorization/', users_views.authorization_view)
+    path('api/v1/authorization/', users_views.AuthorizationAPIView.as_view())
 ]

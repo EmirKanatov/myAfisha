@@ -2,11 +2,49 @@ from django.shortcuts import render
 from django.utils.dateparse import parse_duration
 from rest_framework import status
 from rest_framework.decorators import api_view
+from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
+from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from .serializers import DirectorSerializer, MovieSerializer, MovieDetailSerializer, ReviewSerializer, \
     MovieValidateFields, MovieUpdateSerializer, DirectorValidateFields, ReviewValidateFields
 from .models import Director, Movie, Review
 # Create your views here.
+
+
+class DirectorListAPIView(ListCreateAPIView):
+    queryset = Director.objects.all()
+    serializer_class = DirectorSerializer
+    pagination_class = PageNumberPagination
+
+
+class DirectorDetailUpdateDeleteAPIView(RetrieveUpdateDestroyAPIView):
+    queryset = Director.objects.all()
+    serializer_class = DirectorSerializer
+    lookup_field = 'id'
+
+
+class MovieListAPIView(ListCreateAPIView):
+    queryset = Movie.objects.all()
+    serializer_class = MovieSerializer
+    pagination_class = PageNumberPagination
+
+
+class MovieDetailUpdateDeleteAPIView(RetrieveUpdateDestroyAPIView):
+    queryset = Movie.objects.all()
+    serializer_class = MovieSerializer
+    lookup_field = 'id'
+
+
+class ReviewsListAPIView(ListCreateAPIView):
+    queryset = Review.objects.all()
+    serializer_class = ReviewSerializer
+    pagination_class = PageNumberPagination
+
+
+class ReviewDetailUpdateDeleteAPIView(RetrieveUpdateDestroyAPIView):
+    queryset = Review.objects.all()
+    serializer_class = ReviewSerializer
+    lookup_field = 'id'
 
 
 @api_view(['GET', 'POST'])

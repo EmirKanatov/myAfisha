@@ -10,31 +10,33 @@ from rest_framework.authtoken.models import Token
 from rest_framework.decorators import api_view
 
 from rest_framework.response import Response
+from rest_framework.views import APIView
 
 from users.serializers import UserCreateSerializer, UserSerializer
 from users.token import account_activation_token
 
 
-@api_view(['POST'])
-def register(request):
-    serializer = UserCreateSerializer(data=request.data)
-    serializer.is_valid(raise_exception=True)
-    user = User.objects.create_user(**serializer.validated_data, is_active=False)
-    user.save()
-    current_site = get_current_site(request)
-    mail_subject = 'Activation link has been sent to your email id'
-    message = render_to_string('users/acc_active_email.html', {
-        'user': user,
-        'domain': current_site.domain,
-        'uid': urlsafe_base64_encode(force_bytes(user.pk)),
-        'token': account_activation_token.make_token(user),
-    })
-    to_email = serializer.validated_data.get('email')
-    email = EmailMessage(
-        mail_subject, message, to=[to_email]
-    )
-    email.send()
-    return Response('Please confirm your email address to complete the registration')
+class RegisterAPIView(APIView):
+
+    def post(self, request):
+        serializer = UserCreateSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = User.objects.create_user(**serializer.validated_data, is_active=False)
+        user.save()
+        current_site = get_current_site(request)
+        mail_subject = 'Activation link has been sent to your email id'
+        message = render_to_string('users/acc_active_email.html', {
+            'user': user,
+            'domain': current_site.domain,
+            'uid': urlsafe_base64_encode(force_bytes(user.pk)),
+            'token': account_activation_token.make_token(user),
+        })
+        to_email = serializer.validated_data.get('email')
+        email = EmailMessage(
+            mail_subject, message, to=[to_email]
+        )
+        email.send()
+        return Response('Please confirm your email address to complete the registration')
 
 
 @api_view(['GET'])
@@ -53,13 +55,14 @@ def activate(request, uidb64, token):
         return Response({'message':'Activation link is invalid!'})
 
 
-@api_view(['POST'])
-def authorization_view(request):
-    user = authenticate(**request.data)
-    if user:
-        try:
-            token = Token.objects.get(user=user)
-        except Token.DoesNotExist:
-            token = Token.objects.create(user=user)
-        return Response(data={'key': token.key})
-    return Response(status=status.HTTP_401_UNAUTHORIZED)
+class AuthorizationAPIView(APIView):
+
+    def post(self, request):
+        user = authenticate(**request.data)
+        if user:
+            try:
+                token = Token.objects.get(user=user)
+            except Token.DoesNotExist:
+                token = Token.objects.create(user=user)
+            return Response(data={'key': token.key})
+        return Response(status=status.HTTP_401_UNAUTHORIZED)
