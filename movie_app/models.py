@@ -14,6 +14,7 @@ class Director(models.Model):
 
 class Movie(models.Model):
     title = models.CharField(max_length=100)
+    image = models.ImageField(null=True, upload_to='movie')
     description = models.TextField(null=True, blank=True)
     duration = models.DurationField()
     director = models.ForeignKey(to=Director, null=True, on_delete=models.SET_NULL, related_name='movie')

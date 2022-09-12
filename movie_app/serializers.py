@@ -23,7 +23,7 @@ class MovieDetailSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Movie
-        fields = 'id title duration description director'.split()
+        fields = 'id image title duration description director'.split()
 
 
 class ReviewSerializer(serializers.ModelSerializer):
@@ -39,7 +39,7 @@ class MovieSerializer(WritableNestedModelSerializer, serializers.ModelSerializer
 
     class Meta:
         model = Movie
-        fields = 'title duration review rating director'.split()
+        fields = 'title image duration review rating director'.split()
 
     def get_rating(self, ob):
         return ob.review.all().aggregate(Avg('stars'))['stars__avg']

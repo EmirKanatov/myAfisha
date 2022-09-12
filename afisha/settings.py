@@ -20,7 +20,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-0^86fu(rn9-8q6y82emm#(x+(0i1qjcni^0ebm^pzc7=q@%k5t'
+SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -86,8 +86,12 @@ WSGI_APPLICATION = 'afisha.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'mainshop_database',
+        'HOST': 'localhost',
+        'USER': 'mainshop_user',
+        'PASSWORD': os.environ.get('DATABASE_PASSWORD'),
+        'PORT': 5432
     }
 }
 
@@ -127,6 +131,11 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
 STATIC_URL = 'static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+
+MEDIA_URL = 'media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
@@ -138,7 +147,7 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = "smtp.mail.ru"
 EMAIL_PORT = 2525
 EMAIL_HOST_USER = "laft29@mail.ru" # имя почтового ящика
-EMAIL_HOST_PASSWORD = 'fPRjfagN0qgLcEHRy4Zf' #password
+EMAIL_HOST_PASSWORD = os.environ.get('PASSWORD') #password
 EMAIL_USE_TLS = True
 EMAIL_USE_SSL = False
 DEFAULT_FROM_EMAIL = 'laft29@mail.ru'

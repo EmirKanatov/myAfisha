@@ -20,6 +20,9 @@ from movie_app.views import directors_view, directors_detail_view, movies_view, 
     DirectorDetailUpdateDeleteAPIView, MovieListAPIView, MovieDetailUpdateDeleteAPIView, ReviewsListAPIView, \
     ReviewDetailUpdateDeleteAPIView
 from users import views as users_views
+from django.conf import settings
+from django.conf.urls.static import static
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -35,3 +38,7 @@ urlpatterns = [
          users_views.activate, name='activate'),
     path('api/v1/authorization/', users_views.AuthorizationAPIView.as_view())
 ]
+
+
+urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
